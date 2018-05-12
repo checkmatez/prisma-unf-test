@@ -1,0 +1,185 @@
+type Nomenclature1C {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  refKey: String! @unique
+  deletionMark: Boolean! @default(value: "false")
+  parentKey: Nomenclature1C
+  isFolder: Boolean! @default(value: "false")
+  code: String!
+  description: String!
+  vendorCode: String
+  dateOfChange: DateTime
+}
+
+type Partner1C {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  refKey: String! @unique
+  deletionMark: Boolean! @default(value: "false")
+  parentKey: Partner1C
+  isFolder: Boolean! @default(value: "false")
+  code: String!
+  description: String!
+  contactDetails: [ContactDetail!]!
+}
+
+# -----------------------
+
+type Company {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
+  officialName: String!
+}
+
+type User {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  login: String!
+  password: String!
+  company: Company
+  status: UserStatus! @default(value: "ACTIVE")
+}
+
+enum UserStatus {
+  ACTIVE
+  DISABLED
+}
+
+type ContactDetail {
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  kind: ContactDetailsKind!
+  value: String!
+  rawValue: String!
+  #owner: Partner1C!
+  #lineNumber: Int!
+}
+
+enum ContactDetailsKind {
+  EMAIL
+  PHONE
+  ADDRESS
+}
+
+type Lead {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  description: String!
+  state: LeadState!
+  note: String! @default(value: "")
+  manager: User!
+  contactDetails: [ContactDetail!]!
+    @relation(name: "LeadContactDetails", onDelete: CASCADE)
+}
+
+type LeadState {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
+  color: Color!
+}
+
+type Color {
+  id: ID! @unique
+  hexValue: String!
+}
+
+type Client {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
+  manager: User
+}
+
+type Order {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  client: Client!
+  manager: User
+  positions: [OrderPositions!]!
+}
+
+type OrderPositions {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  nomenclature: Nomenclature!
+  quantity: Float!
+  price: Float!
+  amount: Float!
+  currency: Currency!
+}
+
+type Currency {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  code: String!
+  name: String!
+}
+
+type Nomenclature {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: NomenclatureType! @default(value: "GOOD")
+  name: String!
+  description: String!
+}
+
+enum NomenclatureType {
+  GOOD
+  SERVICE
+}
+
+# mutation {
+#   createOrder(
+#     data: {
+#       positions: {
+#         create: {
+#           quantity: 1
+#           price: 100
+#           amount: 100
+#           currency: { create: {} }
+#         }
+#       }
+#       client: {
+#         create: {
+#           name: "perviy client"
+#           manager: {
+#             create: {
+#               login: "me"
+#               password: "123"
+#               company: { create: { name: "Pepsi", officialName: "Pepsi-co" } }
+#             }
+#           }
+#         }
+#       }
+#     }
+#   ) {
+#     id
+#     createdAt
+#     client {
+#       id
+#       name
+#     }
+#     manager {
+#       id
+#       login
+#       status
+#     }
+#     positions {
+#       id
+#       nomenclature
+#     }
+#   }
+# }

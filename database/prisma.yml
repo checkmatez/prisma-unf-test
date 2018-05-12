@@ -1,0 +1,45 @@
+# the name for the service (will be part of the service's HTTP endpoint)
+service: prisma-unf-test
+
+# the cluster and stage the service is deployed to
+stage: dev
+
+# to disable authentication:
+disableAuth: true
+secret: mysecret123
+
+# the file path pointing to your data model
+datamodel: datamodel.graphql
+
+# seed your service with initial data based on seed.graphql
+seed:
+  import: seed.graphql
+
+cluster: local
+
+subscriptions:
+  notify1C:
+    webhook:
+      url: http://192.168.1.65:9876
+      headers:
+        Content-Type: application/json
+        Authorization: Bearer cha2eiheiphesash3shoofo7eceexaequeebuyaequ1reishiujuu6weisao7ohc
+    query: |
+      subscription partner1C {
+        partner1C {
+          mutation
+          updatedFields
+          previousValues {
+            id
+            createdAt
+            updatedAt
+            description
+          }
+          node {
+            id
+            createdAt
+            updatedAt
+            description
+          }
+        }
+      }

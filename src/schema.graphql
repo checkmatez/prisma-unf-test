@@ -1,0 +1,14 @@
+# import Nomenclature1C from "./generated/prisma.graphql"
+# import Partner1C from "./generated/prisma.graphql"
+# import Partner1CConnection from "./generated/prisma.graphql"
+
+type Query {
+  nomenclatures(first: Int!, skip: Int!): [Nomenclature1C!]!
+  nomenclature(id: ID!): Nomenclature1C
+  partners(first: Int!, skip: Int!, isFolder: Boolean): Partner1CConnection!
+  partner(id: ID!): Partner1C
+}
+
+# type Mutation {
+
+# }
